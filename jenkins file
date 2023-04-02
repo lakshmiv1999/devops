@@ -1,31 +1,10 @@
 pipeline {
   agent any
-  options {
-    buildDiscarder(logRotator(numToKeepStr: '5'))
-  }
-  environment {
-    DOCKERHUB_CREDENTIALS = credentials('vlakshmilakshmi_dockerhub')
-  }
   stages {
-    stage('Build') {
+    stage('git checkout') {
       steps {
-        sh 'docker build -t lloydmatereke/jenkins-docker-hub .'
+       git branch: 'main', credentialsId: '32fb7245-a5d8-41ec-be35-8cd81c15c9fe', url: 'https://github.com/lakshmiv1999/devops.git'
       }
-    }
-    stage('Login') {
-      steps {
-        sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
-      }
-    }
-    stage('Push') {
-      steps {
-        sh 'docker push lloydmatereke/jenkins-docker-hub'
-      }
-    }
-  }
-  post {
-    always {
-      sh 'docker logout'
     }
   }
 }
